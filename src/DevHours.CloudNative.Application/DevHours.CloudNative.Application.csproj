@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DevHours.CloudNative.Core\DevHours.CloudNative.Core.csproj" />
-    <ProjectReference Include="..\..\DevHours.CloudNative.Shared.Abstraction\DevHours.CloudNative.Shared.Abstraction\DevHours.CloudNative.Shared.Abstraction.csproj" />
+    <ProjectReference Include="..\DevHours.CloudNative.Core\DevHours.CloudNative.Core.csproj" />
+    <ProjectReference Include="..\DevHours.CloudNative.Shared.Abstraction\DevHours.CloudNative.Shared.Abstraction.csproj" />
   </ItemGroup>
 
 </Project>

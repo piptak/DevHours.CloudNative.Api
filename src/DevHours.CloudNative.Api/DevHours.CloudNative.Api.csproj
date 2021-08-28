@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DevHours.CloudNative.Application\DevHours.CloudNative.Application\DevHours.CloudNative.Application.csproj" />
+    <ProjectReference Include="..\DevHours.CloudNative.Application\DevHours.CloudNative.Application.csproj" />
     <ProjectReference Include="..\DevHours.CloudNative.Infra\DevHours.CloudNative.Infra.csproj" />
-    <ProjectReference Include="..\DevHours.CloudNative.Shared.Abstraction\DevHours.CloudNative.Shared.Abstraction\DevHours.CloudNative.Shared.Abstraction.csproj" />
+    <ProjectReference Include="..\DevHours.CloudNative.Shared.Abstraction\DevHours.CloudNative.Shared.Abstraction.csproj" />
   </ItemGroup>
 
 

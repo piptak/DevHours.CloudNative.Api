@@ -23,9 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevHours.CloudNative.Infra.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevHours.CloudNative.Core.Tests", "test\DevHours.CloudNative.Core.Tests\DevHours.CloudNative.Core.Tests.csproj", "{CBB13259-F83E-4F7B-9849-B0B4E4A2B6BB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevHours.CloudNative.Shared.Abstraction", "src\DevHours.CloudNative.Shared.Abstraction\DevHours.CloudNative.Shared.Abstraction\DevHours.CloudNative.Shared.Abstraction.csproj", "{F4523139-DAFB-462B-8C1B-878C8D118C8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevHours.CloudNative.Shared.Abstraction", "src\DevHours.CloudNative.Shared.Abstraction\DevHours.CloudNative.Shared.Abstraction.csproj", "{F4523139-DAFB-462B-8C1B-878C8D118C8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevHours.CloudNative.Application", "src\DevHours.CloudNative.Application\DevHours.CloudNative.Application\DevHours.CloudNative.Application.csproj", "{6689C283-94F3-4CA4-A299-F5763F94C04B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevHours.CloudNative.Application", "src\DevHours.CloudNative.Application\DevHours.CloudNative.Application.csproj", "{6689C283-94F3-4CA4-A299-F5763F94C04B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

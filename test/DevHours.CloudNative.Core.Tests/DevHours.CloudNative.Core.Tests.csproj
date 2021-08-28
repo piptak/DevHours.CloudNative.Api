@@ -24,6 +24,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DevHours.CloudNative.Application\DevHours.CloudNative.Application\DevHours.CloudNative.Application.csproj" />
+    <ProjectReference Include="..\..\src\DevHours.CloudNative.Application\DevHours.CloudNative.Application.csproj" />
   </ItemGroup>
 </Project>
