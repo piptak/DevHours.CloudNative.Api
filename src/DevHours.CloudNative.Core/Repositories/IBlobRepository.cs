@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DevHours.CloudNative.Repositories
+namespace DevHours.CloudNative.Core.Repositories
 {
     public interface IBlobRepository<TKey>
     {

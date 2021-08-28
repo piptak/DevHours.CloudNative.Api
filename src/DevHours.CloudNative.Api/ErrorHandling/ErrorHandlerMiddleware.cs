@@ -2,9 +2,12 @@
  * Consumed and adapted from: https://github.com/snatch-dev/Convey/blob/master/src/Convey.WebApi/src/Convey.WebApi/Exceptions/ErrorHandlerMiddleware.cs
  */
 using AutoMapper;
+using DevHours.CloudNative.Core.Exceptions;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -13,13 +16,11 @@ namespace DevHours.CloudNative.Api.ErrorHandling
 {
     internal sealed class ErrorHandlerMiddleware : IMiddleware
     {
-        private readonly IMapper mapper;
         private readonly ILogger<ErrorHandlerMiddleware> logger;
+        private ConcurrentDictionary<string, string> _errorCodes = new ConcurrentDictionary<string, string>();
 
-        public ErrorHandlerMiddleware(IMapper mapper,
-            ILogger<ErrorHandlerMiddleware> logger)
+        public ErrorHandlerMiddleware(ILogger<ErrorHandlerMiddleware> logger)
         {
-            this.mapper = mapper;
             this.logger = logger;
         }
 
@@ -38,18 +39,29 @@ namespace DevHours.CloudNative.Api.ErrorHandling
 
         private async Task HandleErrorAsync(HttpContext context, Exception exception)
         {
-            var exceptionResponse = mapper.Map<ExceptionResponse>(exception);
-            context.Response.StatusCode = (int)(exceptionResponse?.StatusCode ?? HttpStatusCode.BadRequest);
-            var response = exceptionResponse?.Response;
+            string message = "An error occurred.";
+            string errorCode = "error";
+            int statusCode = StatusCodes.Status500InternalServerError;
 
-            if (response is null)
+            if (exception is DomainException)
             {
-                await context.Response.WriteAsync(string.Empty);
-                return;
+                if (!_errorCodes.TryGetValue(exception.GetType().Name, out errorCode))
+                {
+                    errorCode = exception.GetType().Name.Underscore().Replace("_exception", string.Empty);
+                    _errorCodes.TryAdd(exception.GetType().Name, errorCode);
+                }
+
+                statusCode = StatusCodes.Status400BadRequest;
+                message = exception.Message;
             }
 
-            context.Response.ContentType = "application/json";
-            await JsonSerializer.SerializeAsync(context.Response.Body, exceptionResponse.Response);
+            context.Response.StatusCode = statusCode;
+            var error = new ExceptionResponse()
+            {
+                Message = message,
+                ErrorCode = errorCode
+            };
+            await context.Response.WriteAsJsonAsync(error, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }
     }
 }

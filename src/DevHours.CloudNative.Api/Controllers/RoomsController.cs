@@ -1,14 +1,9 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using DevHours.CloudNative.Api.Data.Dtos;
-using DevHours.CloudNative.Core.Services;
-using DevHours.CloudNative.Domain;
+using DevHours.CloudNative.Application.Commands;
+using DevHours.CloudNative.Application.Data.Dtos;
+using DevHours.CloudNative.Application.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Formatter;
-using Microsoft.AspNetCore.OData.Query;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,30 +13,34 @@ namespace DevHours.CloudNative.Api.Controllers
     [ApiController]
     public class RoomsController : ControllerBase
     {
-        private readonly ILogger logger;
-        private readonly RoomService service;
-        private readonly IMapper mapper;
-        private readonly IConfigurationProvider configurationProvider;
+        private readonly IMediator mediator;
 
-        public RoomsController(ILogger<RoomsController> logger, RoomService service, IMapper mapper, IConfigurationProvider configurationProvider)
-            => (this.logger, this.service, this.mapper, this.configurationProvider) = (logger, service, mapper, configurationProvider);
-
-        [HttpGet]
-        [EnableQuery]
-        public IQueryable<RoomDto> GetRooms() => service.Query().ProjectTo<RoomDto>(configurationProvider);
+        public RoomsController(IMediator mediator)
+            => (this.mediator) = (mediator);
 
         [HttpGet("{id:int}", Name = "GetRoom")]
-        public async Task<ActionResult<RoomDto>> GetRoomAsync([FromODataUri] int id)
+        public async Task<ActionResult<RoomDto>> GetRoomAsync(int id, CancellationToken token = default)
         {
-            var room = await service.GetRoomAsync(id);
-            return mapper.Map<RoomDto>(room);
+            return await mediator.Send(new GetRoomQuery { RoomId = id });
+        }
+
+        [HttpGet]
+        public async Task<TableDto<RoomDto>> GetRooms([FromQuery] int skip, [FromQuery] int take)
+        {
+            return await mediator.Send(new GetRoomsQuery { Skip = skip, Take = take });
+        }
+
+        [HttpGet("{id}/bookings")]
+        public async Task<ActionResult<TableDto<BookingDto>>> GetRoomBookingsAsync([FromRoute] int id, [FromQuery] int skip, [FromQuery] int take)
+        {
+            return await mediator.Send(new GetBookingsQuery { RoomId = id, Skip = skip, Take = take });
         }
 
         [HttpPost]
         public async Task<ActionResult<RoomDto>> AddRoom(RoomDto room, CancellationToken token = default)
         {
-            var addedRoom = await service.AddRoomAsync(mapper.Map<Room>(room), token);
-            return CreatedAtRoute("GetRoom", new { id = addedRoom.Id }, mapper.Map<RoomDto>(addedRoom));
+            var id =  await mediator.Send(new AddRoomCommand { RoomDto = room });
+            return CreatedAtRoute("GetRoom", new { id = id }, null);
         }
 
         [HttpPut("{id}")]
@@ -52,7 +51,7 @@ namespace DevHours.CloudNative.Api.Controllers
                 throw new Exception("Id mismatch");
             }
 
-            await service.UpdateRoomAsync(mapper.Map<Room>(room), token);
+            await mediator.Send(new UpdateRoomCommand { RoomDto = room });
 
             return NoContent();
         }
@@ -60,7 +59,7 @@ namespace DevHours.CloudNative.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id, CancellationToken token = default)
         {
-            await service.DeleteRoomAsync(id, token);
+            await mediator.Send(new DeleteRoomCommand { RoomId = id });
             return NoContent();
         }
     }

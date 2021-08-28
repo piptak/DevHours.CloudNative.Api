@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using DevHours.CloudNative.Repositories;
+using DevHours.CloudNative.Core.Repositories;
 
 namespace DevHours.CloudNative.Core.Services
 {

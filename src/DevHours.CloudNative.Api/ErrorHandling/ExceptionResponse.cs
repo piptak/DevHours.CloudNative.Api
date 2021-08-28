@@ -7,7 +7,7 @@ namespace DevHours.CloudNative.Api.ErrorHandling
 {
     public class ExceptionResponse
     {
-        public object Response { get; set; }
-        public HttpStatusCode StatusCode { get; set; }
+        public string ErrorCode { get; set; }
+        public string Message { get; set; }
     }
 }

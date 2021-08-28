@@ -4,7 +4,7 @@
 
 ###
 
-GET {{roomsuri}}
+GET {{roomsuri}}?skip=0&take=2
 
 ###
 
@@ -17,17 +17,17 @@ Content-Type: application/json
 
 ###
 
-PUT {{roomsuri}}/2
+PUT {{roomsuri}}/1
 Content-Type: application/json
 
 {
-    "Id": 2,
-    "Description": "This is a room description"
+    "Id": 1,
+    "Description": "This is a room description looong"
 }
 
 ###
 
-GET {{roomsuri}}/2
+GET {{roomsuri}}/1
 
 
 ###

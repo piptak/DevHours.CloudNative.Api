@@ -1,5 +1,7 @@
+using DevHours.CloudNative.Core.Repositories;
 using DevHours.CloudNative.DataAccess;
 using DevHours.CloudNative.Domain;
+using DevHours.CloudNative.Infra.Repositories;
 using DevHours.CloudNative.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,18 +19,16 @@ namespace DevHours.CloudNative.Infra
 
                 if (string.IsNullOrWhiteSpace(hotelConnectionString))
                 {
-                    o.UseInMemoryDatabase("hoteldb")
-                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                    o.UseInMemoryDatabase("hoteldb");
                 }
                 else
                 {
-                    o.UseSqlServer(connectionString: hotelConnectionString)
-                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                    o.UseNpgsql(connectionString: hotelConnectionString);
                 }
             });
 
-            services.AddScoped<IDataRepository<Room>, RoomsRepository>();
-            services.AddScoped<IDataRepository<Booking>, BookingRepository>();
+            services.AddScoped<Core.Repositories.Read.IRoomBookingRepository, Repositories.Read.RoomBookingRepository>();
+            services.AddScoped<Core.Repositories.Write.IRoomBookingRepository, Repositories.Write.RoomBookingRepository>();
 
             services.AddScoped<IBlobRepository<string>>(provider =>
             {

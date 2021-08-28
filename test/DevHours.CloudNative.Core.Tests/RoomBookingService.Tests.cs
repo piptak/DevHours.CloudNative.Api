@@ -1,9 +1,9 @@
-using DevHours.CloudNative.Core.Services;
+using AutoMapper;
+using DevHours.CloudNative.Application.Queries;
+using DevHours.CloudNative.Core.Exceptions;
+using DevHours.CloudNative.Core.Repositories.Read;
 using DevHours.CloudNative.Domain;
-using DevHours.CloudNative.Repositories;
-using Microsoft.Extensions.Logging;
 using Moq;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -13,17 +13,13 @@ namespace DevHours.CloudNative.Core.Test
     public class RoomBookingServiceTests
     {
 
-        private readonly Mock<IDataRepository<Booking>> bookingRepository;
-        private readonly Mock<IDataRepository<Room>> roomRepository;
-        private readonly Mock<ILogger<RoomBookingService>> logger;
-
-        private RoomBookingService roomBookingService;
+        private readonly Mock<IRoomBookingRepository> repository;
+        private readonly Mock<IMapper> mapper;
 
         public RoomBookingServiceTests()
         {
-            bookingRepository = new Mock<IDataRepository<Booking>>();
-            roomRepository = new Mock<IDataRepository<Room>>();
-            logger = new Mock<ILogger<RoomBookingService>>();
+            repository = new Mock<IRoomBookingRepository>();
+            mapper = new Mock<IMapper>();
         }
 
         [Fact]
@@ -31,13 +27,15 @@ namespace DevHours.CloudNative.Core.Test
         {
             //Arrange
             var notExistingBookingRoom = new Booking();
-            roomRepository
-                .Setup(b => b.GetAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-                .Returns(null);
-            roomBookingService = new RoomBookingService(logger.Object, bookingRepository.Object, roomRepository.Object);
+            GetBookingQuery query = new GetBookingQuery();
+            GetBookingsQueryHandler handler = new GetBookingsQueryHandler(repository.Object, mapper.Object);
+
+            repository
+                .Setup(b => b.GetBookingAsync(It.IsAny<int>()))
+                .Returns(() => Task.FromResult<Booking>(null));
 
             //Act
-            await Assert.ThrowsAsync<NullReferenceException>(async () => await roomBookingService.Book(notExistingBookingRoom));
+            await Assert.ThrowsAsync<BookingNotFoundException>(async () => await handler.Handle(query, It.IsAny<CancellationToken>()));
         }
     }
 }

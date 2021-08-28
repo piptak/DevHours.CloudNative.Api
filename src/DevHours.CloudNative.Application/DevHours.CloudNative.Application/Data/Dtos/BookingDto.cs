@@ -1,6 +1,6 @@
 using System;
 
-namespace DevHours.CloudNative.Api.Data.Dtos
+namespace DevHours.CloudNative.Application.Data.Dtos
 {
     public class BookingDto
     {
@@ -8,6 +8,5 @@ namespace DevHours.CloudNative.Api.Data.Dtos
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int RoomId { get; set; }
-        public virtual RoomDto Room { get; set; }
     }
 }

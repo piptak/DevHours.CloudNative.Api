@@ -1,6 +1,6 @@
 using DevHours.CloudNative.DataAccess;
 using DevHours.CloudNative.Domain;
-using DevHours.CloudNative.Repositories;
+using DevHours.CloudNative.Infra.Repositories.Write;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,7 +11,7 @@ namespace DevHours.CloudNative.Infra.Tests
 {
     public class BookingRepositoryTests
     {
-        private BookingRepository bookingRepository;
+        private RoomBookingRepository bookingRepository;
         private readonly HotelContext context;
 
         public BookingRepositoryTests()
@@ -36,10 +36,10 @@ namespace DevHours.CloudNative.Infra.Tests
             };
             await context.Bookings.AddAsync(expectedBooking);
             await context.SaveChangesAsync();
-            bookingRepository = new BookingRepository(context);
+            bookingRepository = new RoomBookingRepository(context);
 
             //Act
-            var result = await bookingRepository.GetAsync(bookingId);
+            var result = await bookingRepository.GetBookingAsync(bookingId);
 
             //Assert
             result.Should().BeEquivalentTo(expectedBooking);

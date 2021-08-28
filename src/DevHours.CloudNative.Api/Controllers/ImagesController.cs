@@ -1,7 +1,6 @@
 using DevHours.CloudNative.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -21,7 +20,6 @@ namespace DevHours.CloudNative.Api.Controllers
             => (this.logger, this.imagesService) = (logger, imagesService);
 
         [HttpGet]
-        [EnableQuery]
         public IAsyncEnumerable<string> GetImageNames(int roomId, CancellationToken token = default)
             => imagesService.ListNamesAsync(roomId, token);
 

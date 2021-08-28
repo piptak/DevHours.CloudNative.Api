@@ -1,8 +1,8 @@
 using AutoMapper;
-using DevHours.CloudNative.Api.Data.Dtos;
+using DevHours.CloudNative.Application.Data.Dtos;
 using DevHours.CloudNative.Domain;
 
-namespace DevHours.CloudNative.Api.Mappings
+namespace DevHours.CloudNative.Application.Data.Dtos.Mappings
 {
     public class DtoMappingProfile : Profile
     {

@@ -1,14 +1,18 @@
-using DevHours.CloudNative.Api.Data.OData.Extensions;
+using DevHours.CloudNative.Api.Configuration;
 using DevHours.CloudNative.Api.ErrorHandling.Extensions;
+using DevHours.CloudNative.Api.JsonConverters;
+using DevHours.CloudNative.Application;
 using DevHours.CloudNative.Core;
 using DevHours.CloudNative.DataAccess;
 using DevHours.CloudNative.Infra;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Text.Json;
 
 namespace DevHours.CloudNative.Api
 {
@@ -28,11 +32,15 @@ namespace DevHours.CloudNative.Api
                     .AddCloudNativeInfrastructure(Configuration);
 
             services.AddControllers(options => options.EnableEndpointRouting = false)
-                    .AddJsonOptions(o => o.JsonSerializerOptions.PropertyNamingPolicy = null)
-                    .AddODataBindings();
+                    .AddJsonOptions(o => 
+                    {
+                        o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                        o.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                    });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddErrorHandler();
+            services.AddCQS();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +51,11 @@ namespace DevHours.CloudNative.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            var allowedOrigins = Configuration.GetSection("Cors").Get<CorsConfig>().AllowedOrigins;
+            app.UseCors(options => options.WithOrigins(allowedOrigins)
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -51,7 +64,10 @@ namespace DevHours.CloudNative.Api
 
             app.UseErrorHandler();
 
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+                endpoints.MapGet("/", async context => await context.Response.WriteAsync("DevHours Cloud Native Booking API"));
+            });
 
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {

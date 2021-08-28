@@ -1,3 +1,4 @@
+using Itenso.TimePeriod;
 using System;
 
 namespace DevHours.CloudNative.Domain
@@ -8,6 +9,7 @@ namespace DevHours.CloudNative.Domain
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int RoomId { get; set; }
-        public virtual Room Room { get; set; }
+        public Room Room { get; set; }
+        public ITimePeriod TimeRane => new TimeRange(StartDate, EndDate);
     }
 }
