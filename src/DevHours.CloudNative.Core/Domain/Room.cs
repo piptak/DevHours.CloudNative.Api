@@ -20,12 +20,14 @@ namespace DevHours.CloudNative.Domain
 
         public void UpdateBooking(Booking booking)
         {
-            if (Bookings.SingleOrDefault(x => x.Id == booking.Id) is null)
+            Booking stored = Bookings.SingleOrDefault(x => x.Id == booking.Id);
+            if (stored is null)
             {
                 throw new BookingNotFoundException(booking.Id);
             }
 
             BookingTimeRangePolicy(booking);
+            stored.Update(booking);
         }
 
         private void BookingTimeRangePolicy(Booking booking)

@@ -11,5 +11,11 @@ namespace DevHours.CloudNative.Domain
         public int RoomId { get; set; }
         public Room Room { get; set; }
         public ITimePeriod TimeRane => new TimeRange(StartDate, EndDate);
+
+        public void Update(Booking booking)
+        {
+            StartDate = booking.StartDate;
+            EndDate = booking.EndDate;
+        }
     }
 }
