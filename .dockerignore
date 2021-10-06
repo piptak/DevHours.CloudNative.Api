@@ -1,4 +1,5 @@
-bin/
-obj/
-out/
-TestResults/
+**/bin/
+**/obj/
+**/out/
+
+Dockerfile*
