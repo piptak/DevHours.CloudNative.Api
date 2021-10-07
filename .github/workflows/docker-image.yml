@@ -8,16 +8,17 @@ on:
 
 env:
   IMAGE_NAME: devhours.cloudnative.api
+  TAG_REF: ${GITHUB_REF/refs\/tags\//}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: test tags
-        run: git tag
+      - name: test tag
+        run: echo ${{ env.TAG_REF }}
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}:$(git tag | tail -1)
+        run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}:${{ env.TAG_REF }}
 
   # publish:
 
