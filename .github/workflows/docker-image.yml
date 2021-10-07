@@ -8,7 +8,6 @@ on:
 
 env:
   IMAGE_NAME: devhours.cloudnative.api
-  TAG_REF: $(date +%s)
   REGISTRY: piptak
 
 jobs:
@@ -17,16 +16,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Create version tag
+        id: createtag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}:${{ env.TAG_REF }}
+        run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+        env:
+          VERSION: ${{ steps.createtag.outputs.tag }}
 
       - name: Tag image
-        run: docker tag ${{ env.IMAGE_NAME }}:${{ env.TAG_REF }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_REF }}
-
-  # publish:
-
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #   - name: tag and push image
+        run: docker tag ${{ env.IMAGE_NAME }}:${{ env.VERSION }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+        env:
+          VERSION: ${{ steps.createtag.outputs.tag }}
