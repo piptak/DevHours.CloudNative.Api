@@ -8,17 +8,22 @@ on:
 
 env:
   IMAGE_NAME: devhours.cloudnative.api
-  TAG_REF: ${GITHUB_REF/refs\/tags\//}
+  TAG_REF: $(date +%s)
+  IMAGE_FULL_NAME: ${{ env.IMAGE_NAME }}:${{ env.TAG_REF }}
+  REGISTRY: piptak
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: test tag
-        run: echo ${{ env.TAG_REF }}
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}:${{ env.TAG_REF }}
+        run: docker build . --file Dockerfile --tag ${{ env.IMAGE_FULL_NAME }}
+
+      - name: Tag image
+        run: docker tag ${{ env.IMAGE_FULL_NAME }} ${{ env.REGISTRY }}/${{ env.IMAGE_FULL_NAME }}
 
   # publish:
 
