@@ -55,7 +55,7 @@ jobs:
           VERSION: ${{ steps.createtag.outputs.tag }}
         with:
           resource-group: dev-hours-test
-          dns-name-label: url-for-container
+          dns-name-label: dev-hours-api
           image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
           name: dev-hours-api
           location: 'westeurope'
