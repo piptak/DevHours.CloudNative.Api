@@ -10,18 +10,14 @@ env:
   IMAGE_NAME: devhours.cloudnative.api
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-      name: test tag
-      run: git tag
-    - uses: actions/checkout@v2
-      name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}:$(git tag | tail -1)
+      - uses: actions/checkout@v2
+      - name: test tags
+        run: git tag
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}:$(git tag | tail -1)
 
   # publish:
 
