@@ -43,3 +43,19 @@ jobs:
         run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
         env:
           VERSION: ${{ steps.createtag.outputs.tag }}
+
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy application
+        uses: Azure/aci-deploy@v1
+        with:
+          resource-group: dev-hours-test
+          dns-name-label: url-for-container
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          name: dev-hours-api
+          location: 'westeurope'
+          environment-variables: "Cors__AllowedOrigins__0=http://dev-hours-frontend.westeurope.azurecontainer.io"
+
