@@ -51,6 +51,8 @@ jobs:
 
       - name: Deploy application
         uses: Azure/aci-deploy@v1
+        env:
+          VERSION: ${{ steps.createtag.outputs.tag }}
         with:
           resource-group: dev-hours-test
           dns-name-label: url-for-container
