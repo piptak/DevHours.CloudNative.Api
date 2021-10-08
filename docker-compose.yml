@@ -1,13 +1,25 @@
 version: "3.9"
 services:
-    
-    db:
-        image: "mcr.microsoft.com/mssql/server"
-        ports: 
-            - "1433:1433"
+    api:
+        image: devhours.cloudnative.api
+        ports:
+            - "5000:80"
         environment:
-            SA_PASSWORD: "Your_password123"
-            ACCEPT_EULA: "Y"
+            Cors__AllowedOrigins__0: "http://localhost:4200"
+            ConnectionStrings__HotelDbConnection: "User ID=postgres;Password=example;Host=db;Port=5432;Database=myDataBase;"
+        depends_on: 
+            - db
+    frontend:
+        image:  devhours.cloudnative.frontend
+        ports:
+            - "4200:80"
+        environment:
+            webapi: "http://localhost:5000/api"
+    db:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: example
     storage: 
         image: mcr.microsoft.com/azure-storage/azurite
         ports:
