@@ -36,3 +36,5 @@ jobs:
 
     - name: Publish docker image
       run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+      env:
+        VERSION: ${{ steps.createtag.outputs.tag }}
