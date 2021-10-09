@@ -23,8 +23,8 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: 'Create version tag'
-        id: createtag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      id: createtag
+      uses: "WyriHaximus/github-action-get-previous-tag@v1"
 
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}
